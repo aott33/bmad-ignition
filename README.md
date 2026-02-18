@@ -77,7 +77,3 @@ Lead Ignition Developer who:
 
 - [Fuuz Claude Skills](https://github.com/fuuz-io) — Customize file patterns and ISA standards implementation
 - [BW Design Group](https://github.com/bw-design-group/templates.ignition.postgres) — Docker/Liquibase reference templates
-
-## License
-
-MIT
