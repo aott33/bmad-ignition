@@ -1,0 +1,94 @@
+# generated: 2026-02-19
+# project: bmad-ignition
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-02-19
+project: bmad-ignition
+project_key: NOKEY
+tracking_system: file-system
+story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+development_status:
+  # Epic 1: Foundation — Dev Agent Pilot
+  epic-1: in-progress
+  1-1-populate-dev-agent-memories-platform-constraints: review
+  1-2-populate-dev-agent-memories-isa-standards: backlog
+  1-3-populate-dev-agent-critical-actions: backlog
+  1-4-populate-dev-agent-tooling-integration: backlog
+  1-5-validate-dev-agent-behavior: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Planning Agents — Analyst, PM, Architect
+  epic-2: backlog
+  2-1-populate-analyst-agent-ia-requirements-discovery: backlog
+  2-2-populate-pm-agent-isa-95-and-ignition-awareness: backlog
+  2-3-populate-architect-agent-data-modeling-and-udt-patterns: backlog
+  2-4-validate-planning-workflow: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Design & Coordination — UX Designer, SM, QA
+  epic-3: backlog
+  3-1-populate-ux-designer-agent-isa-101-hmi-principles: backlog
+  3-2-populate-sm-agent-parallel-execution-coordination: backlog
+  3-3-populate-qa-agent-ignition-validation-patterns: backlog
+  3-4-validate-design-coordination-agents: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: ISA Standards Reference Documentation
+  epic-4: backlog
+  4-1-create-isa-standards-index-and-overview: backlog
+  4-2-create-isa-95-equipment-hierarchy-reference: backlog
+  4-3-create-isa-101-hmi-reference: backlog
+  4-4-create-isa-18-2-alarm-management-reference: backlog
+  4-5-create-isa-88-batch-and-iec-62443-security-references: backlog
+  4-6-create-customize-file-reference-documentation: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Dairy Pilot — End-to-End Validation
+  epic-5: backlog
+  5-1-create-dairy-pilot-project-brief: backlog
+  5-2-create-dairy-pilot-prd: backlog
+  5-3-create-dairy-pilot-architecture: backlog
+  5-4-create-dairy-pilot-project-context-template: backlog
+  5-5-document-dairy-pilot-walkthrough: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Onboarding & Polish
+  epic-6: backlog
+  6-1-create-quickstart-guide: backlog
+  6-2-create-ignition-development-lifecycle-guide: backlog
+  6-3-create-git-merge-strategies-guide: backlog
+  6-4-polish-readme-and-repository-structure: backlog
+  6-5-record-video-walkthrough: backlog
+  epic-6-retrospective: optional

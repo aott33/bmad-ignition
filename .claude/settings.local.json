@@ -3,7 +3,9 @@
     "allow": [
       "Bash(cat:*)",
       "Bash(mkdir:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(node -e:*)",
+      "Bash(python:*)"
     ]
   }
 }

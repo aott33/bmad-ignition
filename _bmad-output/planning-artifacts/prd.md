@@ -48,6 +48,23 @@ This is a tool and learning vehicle, not a commercial product. It documents a wo
 
 **Honest scope.** This is a reference implementation and portfolio piece. If it only helps the author, that's acceptable. If it helps the broader Ignition community adopt AI tooling safely, that's the upside. The documented process may reveal gaps that lead to better tooling or a refined stack.
 
+## How to Read This Document
+
+| If you are... | Start here | Key sections |
+|---------------|------------|--------------|
+| **Executive/Stakeholder** | Executive Summary | Success Criteria, Product Scope |
+| **Project Manager** | Success Criteria | User Journeys, Project Scoping |
+| **Developer** | Developer Tool Specific Requirements | Functional Requirements, Technical Constraints |
+| **Architect** | Domain-Specific Requirements | FR12-FR16, ISA Standards references |
+| **QA Engineer** | Non-Functional Requirements | FR30-FR33, Validation sections |
+| **AI Agent** | Full document (sequential) | All FRs, NFRs, Technical Constraints |
+
+**Document conventions:**
+- **FRs** are numbered sequentially (FR1-FR43) and organized by capability area
+- **NFRs** use category prefixes (DX=Developer Experience, I=Integration, Q=Quality, E=Error Handling, M=Maintainability)
+- **ISA standards** are referenced throughout; see Project Classification for the full list
+- **Dependencies** are noted inline where FRs depend on other FRs
+
 ## Project Classification
 
 | Dimension | Value |
@@ -351,79 +368,101 @@ Rather than recreating infrastructure, bmad-ignition references existing communi
 
 ### Onboarding & Setup
 
-- FR1: Developer can clone the bmad-ignition repository and have a working directory structure immediately
-- FR2: Developer can run a single install command (`npx bmad-method install`) to configure all agent customizations
-- FR3: Developer can follow quickstart documentation to produce first workflow output within one hour
-- FR4: Developer can watch a video walkthrough demonstrating the complete workflow visually
+- **FR1:** Developer can clone the bmad-ignition repository and have a working directory structure immediately
+- **FR2:** Developer can run a single install command (`npx bmad-method install`) to configure all agent customizations
+  - *AC: Command completes without error; `_bmad/_config/agents/*.customize.yaml` files present with Ignition content*
+- **FR3:** Developer can follow quickstart documentation to produce first workflow output within one hour
+  - *AC: New developer completes quickstart → analyst workflow → project brief output in ≤60 minutes*
+- **FR4:** Developer can watch a video walkthrough demonstrating the complete workflow visually
 
 ### Requirements & Analysis
 
-- FR5: Analyst agent can gather industrial automation requirements using domain-specific questions
-- FR6: Analyst agent can identify equipment types, alarm philosophy, and operator workflows during discovery
-- FR7: Developer can generate a project brief that captures SCADA/MES scope accurately
+- **FR5:** Analyst agent can gather industrial automation requirements using domain-specific questions
+- **FR6:** Analyst agent can identify equipment types, alarm philosophy, and operator workflows during discovery
+- **FR7:** Developer can generate a project brief that captures SCADA/MES scope accurately
 
 ### Planning & PRD Creation
 
-- FR8: PM agent can produce PRD documents with ISA-95 equipment hierarchy
-- FR9: PM agent can align requirements with ISA-101, ISA-88, and ISA-18.2 standards
-- FR10: PM agent can prioritize features appropriate for Ignition platform capabilities
-- FR11: Developer can iterate on PRD content through collaborative refinement
+*Dependencies: FR8-FR11 depend on FR5-FR7 (requirements/analysis)*
+
+- **FR8:** PM agent can produce PRD documents with ISA-95 equipment hierarchy
+- **FR9:** PM agent can align requirements with ISA-101, ISA-88, and ISA-18.2 standards
+- **FR10:** PM agent can prioritize features appropriate for Ignition platform capabilities
+- **FR11:** Developer can iterate on PRD content through collaborative refinement
 
 ### Architecture & Data Modeling
 
-- FR12: Architect agent can design ISA-95 compliant equipment hierarchies (Enterprise → Site → Area → Line → Cell → Asset)
-- FR13: Architect agent can propose UDT structures aligned with Ignition best practices
-- FR14: Architect agent can design database schemas for equipment metadata when applicable
-- FR15: Architect agent can apply ISA-88 batch/procedural control patterns
-- FR16: Developer can review and refine architectural decisions before implementation
+*Dependencies: FR12-FR16 depend on FR8-FR11 (PRD/planning)*
+
+- **FR12:** Architect agent can design ISA-95 compliant equipment hierarchies (Enterprise → Site → Area → Line → Cell → Asset)
+- **FR13:** Architect agent can propose UDT structures aligned with Ignition best practices
+- **FR14:** Architect agent can design database schemas for equipment metadata when applicable
+- **FR15:** Architect agent can apply ISA-88 batch/procedural control patterns
+- **FR16:** Developer can review and refine architectural decisions before implementation
 
 ### UX Design
 
-- FR17: UX Designer agent can create screen layouts following ISA-101 High Performance HMI principles
-- FR18: UX Designer agent can design navigation flows appropriate for operator workflows
-- FR19: UX Designer agent can specify visual design patterns for industrial displays
+*Dependencies: FR17-FR19 depend on FR12 (ISA-95 hierarchy) and FR8 (PRD)*
+
+- **FR17:** UX Designer agent can create screen layouts following ISA-101 High Performance HMI principles
+- **FR18:** UX Designer agent can design navigation flows appropriate for operator workflows
+- **FR19:** UX Designer agent can specify visual design patterns for industrial displays
 
 ### Frontend Development
 
-- FR20: Frontend agent can generate Perspective view JSON definitions with correct schema
-- FR21: Frontend agent can create dynamic view patterns (templates, indirect bindings)
-- FR22: Frontend agent can write valid Jython 2.7 event handlers (not Python 3)
-- FR23: Frontend agent can create bindings that reference valid tag paths
-- FR24: Frontend agent can apply ISA-101 principles in view implementation
+*Dependencies: FR20-FR24 depend on FR12-FR13 (architecture) and FR25-FR26 (UDTs/tags)*
+
+- **FR20:** Frontend agent can generate Perspective view JSON definitions with correct schema
+  - *AC: Generated JSON imports into Ignition Designer without modification; renders correctly*
+- **FR21:** Frontend agent can create dynamic view patterns (templates, indirect bindings)
+- **FR22:** Frontend agent can write valid Jython 2.7 event handlers (not Python 3)
+  - *AC: Zero syntax errors in ignition.nvim LSP; no Python 3 constructs (print functions, f-strings)*
+- **FR23:** Frontend agent can create bindings that reference valid tag paths
+- **FR24:** Frontend agent can apply ISA-101 principles in view implementation
 
 ### Backend Development
 
-- FR25: Backend agent can create UDT definitions following Ignition patterns
-- FR26: Backend agent can configure tag instances with appropriate parameter mappings
-- FR27: Backend agent can implement alarm configurations per ISA-18.2 (priorities, states, shelving)
-- FR28: Backend agent can write gateway scripts in valid Jython 2.7
-- FR29: Backend agent can design database queries for equipment data when applicable
+*Dependencies: FR25-FR29 depend on FR12-FR15 (architecture/data model)*
+
+- **FR25:** Backend agent can create UDT definitions following Ignition patterns
+  - *AC: UDT JSON imports into Ignition without error; follows community naming conventions*
+- **FR26:** Backend agent can configure tag instances with appropriate parameter mappings
+- **FR27:** Backend agent can implement alarm configurations per ISA-18.2 (priorities, states, shelving)
+  - *AC: Alarm config includes priority levels 1-4, deadband settings, and appropriate states*
+- **FR28:** Backend agent can write gateway scripts in valid Jython 2.7
+- **FR29:** Backend agent can design database queries for equipment data when applicable
 
 ### Validation & Quality
 
-- FR30: QA agent can validate agent output against Ignition requirements
-- FR31: Developer can run ignition-lint to validate Perspective views before import
-- FR32: ignition.nvim can provide LSP completions and diagnostics during development
-- FR33: Developer can identify and correct agent errors before deployment
+*Dependencies: FR30-FR33 depend on FR20-FR29 (implementation outputs)*
+
+- **FR30:** QA agent can validate agent output against Ignition requirements
+- **FR31:** Developer can run ignition-lint to validate Perspective views before import
+  - *AC: `ignition-lint check views/` returns pass or actionable error messages; >90% pass rate target*
+- **FR32:** ignition.nvim can provide LSP completions and diagnostics during development
+  - *AC: LSP active in editor; completions appear for `system.*` calls; diagnostics flag errors inline*
+- **FR33:** Developer can identify and correct agent errors before deployment
 
 ### Parallel Development
 
-- FR34: Multiple dev agents can work on separate Perspective views without file conflicts
-- FR35: Developer can run parallel stories during the same sprint
-- FR36: Version control can track changes across parallel development streams
+*Dependencies: FR34-FR36 depend on FR20-FR29 (implementation work in progress)*
+
+- **FR34:** Multiple dev agents can work on separate Perspective views without file conflicts
+- **FR35:** Developer can run parallel stories during the same sprint
+- **FR36:** Version control can track changes across parallel development streams
 
 ### Documentation & Reference
 
-- FR37: Developer can access ISA standards reference documentation within the project
-- FR38: Developer can use project context templates that encode Ignition constraints
-- FR39: Customize file documentation can explain how agent customizations work
-- FR40: Dairy simulator example can demonstrate complete end-to-end workflow
+- **FR37:** Developer can access ISA standards reference documentation within the project
+- **FR38:** Developer can use project context templates that encode Ignition constraints
+- **FR39:** Customize file documentation can explain how agent customizations work
+- **FR40:** Dairy simulator example can demonstrate complete end-to-end workflow
 
 ### Safety & Compliance Awareness
 
-- FR41: Agents can note when touching SIS configurations or safety interlocks (awareness only)
-- FR42: Agents can recognize IT/OT boundary concepts in code generation
-- FR43: All agent output can be reviewed by human engineering authority before deployment
+- **FR41:** Agents can note when touching SIS configurations or safety interlocks (awareness only)
+- **FR42:** Agents can recognize IT/OT boundary concepts in code generation
+- **FR43:** All agent output can be reviewed by human engineering authority before deployment
 
 ## Non-Functional Requirements
 

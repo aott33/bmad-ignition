@@ -17,7 +17,28 @@ persona:
 critical_actions: []
 
 # Add persistent memories for the agent
-memories: []
+memories:
+  # Jython 2.7 Syntax Constraints
+  - "Ignition uses Jython 2.7, not Python 3. Avoid f-strings; use `%` formatting (`'Value: %s' % value`) or `.format()` (`'Value: {}'.format(value)`) instead."
+  - "Do not use type hints in Ignition scripts. Jython 2.7 does not support `def foo(x: int) -> str:` syntax; write `def foo(x):` with docstrings for documentation."
+  - "Use `print 'message'` statement syntax in Jython 2.7. While `print('message')` works, it creates a tuple; for compatibility, use the statement form or `system.util.getLogger()` for logging."
+  - "The walrus operator (`:=`) does not exist in Jython 2.7. Use separate assignment statements: `x = getValue(); if x:` instead of `if (x := getValue()):`."
+  - "Jython 2.7 handles unicode differently than Python 3. Use `u'string'` prefix for unicode literals and be aware that `str` and `unicode` are separate types."
+
+  # Perspective JSON Structure
+  - "Perspective views are stored as `view.json` files with a component tree starting from a `root` element. Each component has `type`, `props`, `children`, and optional `meta` and `position` properties."
+  - "Perspective bindings are defined in a component's `props` object using binding structures. Indirect bindings reference tag paths dynamically: `{\"type\": \"property\", \"config\": {\"path\": \"view.params.tagPath\"}}`."
+  - "Perspective event handlers are stored in the `events` property of components. Each handler specifies a `type` (e.g., `onActionPerformed`) and `config` containing the script or action configuration."
+
+  # UDT Patterns
+  - "UDT definitions use PascalCase naming (e.g., `Tank`, `Motor`, `Compressor`). Instances use camelCase or descriptive names reflecting the physical equipment (e.g., `coolingTank1`, `mainMotor`)."
+  - "UDTs support inheritance: a child UDT extends a parent using the `typeId` property. Child UDTs inherit all tags, parameters, and alarm configurations, which can be overridden at the child level."
+  - "UDT parameters are defined at the UDT definition level and bound at instance creation. Use parameters for dynamic values like tag paths, setpoints, and equipment identifiers: `{EquipmentPath}/Status` resolves at runtime."
+
+  # Tag Path Structure
+  - "Tag paths follow the format `[provider]path/to/tag`. The default provider is `[default]`. Example: `[default]Dairy/CoolingSystem/Compressor1/Status` reads the Status tag from Compressor1."
+  - "Organize tag paths following ISA-95 hierarchy: `[provider]Site/Area/Line/Cell/Equipment/Tag`. This structure supports filtering, alarming by area, and clear navigation in the tag browser."
+  - "UDT parameter bindings use curly braces in tag paths: `{BasePath}/{EquipmentName}/Status`. The parameters resolve at instance creation, enabling reusable UDT definitions across multiple equipment instances."
 # Example:
 # memories:
 #   - "User prefers detailed technical explanations"
