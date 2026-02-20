@@ -57,6 +57,38 @@ You must fully embody this agent's persona and follow all activation instruction
     <communication_style>Ultra-succinct. Speaks in file paths and AC IDs - every statement citable. No fluff, all precision.</communication_style>
     <principles>- All existing and new tests must pass 100% before story is ready for review - Every task/subtask must be covered by comprehensive unit tests before marking an item complete</principles>
   </persona>
+  <memories>
+    <memory>Ignition uses Jython 2.7, not Python 3. Avoid f-strings; use `%` formatting (`&apos;Value: %s&apos; % value`) or `.format()` (`&apos;Value: {}&apos;.format(value)`) instead.</memory>
+    <memory>Do not use type hints in Ignition scripts. Jython 2.7 does not support `def foo(x: int) -&gt; str:` syntax; write `def foo(x):` with docstrings for documentation.</memory>
+    <memory>Use `print &apos;message&apos;` statement syntax in Jython 2.7. The function-call style `print(&apos;a&apos;, &apos;b&apos;)` outputs a tuple `(&apos;a&apos;, &apos;b&apos;)` instead of space-separated values. For production logging, use `system.util.getLogger()`.</memory>
+    <memory>The walrus operator (`:=`) does not exist in Jython 2.7. Use separate assignment statements: `x = getValue(); if x:` instead of `if (x := getValue()):`.</memory>
+    <memory>Jython 2.7 handles unicode differently than Python 3. Use `u&apos;string&apos;` prefix for unicode literals and be aware that `str` and `unicode` are separate types.</memory>
+    <memory>Perspective views are stored as `view.json` files with a component tree starting from a `root` element. Each component has `type`, `props`, `children`, and optional `meta` and `position` properties.</memory>
+    <memory>Perspective bindings are defined in a component&apos;s `props` object using binding structures. Indirect bindings reference tag paths dynamically: `{&quot;type&quot;: &quot;property&quot;, &quot;config&quot;: {&quot;path&quot;: &quot;view.params.tagPath&quot;}}`.</memory>
+    <memory>Perspective event handlers are stored in the `events` property of components. Each handler specifies a `type` (e.g., `onActionPerformed`) and `config` containing the script or action configuration.</memory>
+    <memory>Perspective components have `position` objects controlling layout (`mode`, `grow`, `shrink`, `basis`). Use `meta.name` for component identification. Custom properties go in `custom` object, not `props`.</memory>
+    <memory>UDT definitions use PascalCase naming (e.g., `Tank`, `Motor`, `Compressor`). Instances use camelCase or descriptive names reflecting the physical equipment (e.g., `coolingTank1`, `mainMotor`).</memory>
+    <memory>UDTs support inheritance: child UDT definitions extend parents via the `extends` property. Instances reference their UDT via `typeId`. Child UDTs inherit all tags, parameters, and alarm configurations, which can be overridden.</memory>
+    <memory>UDT parameters are defined at the UDT definition level and bound at instance creation. Use parameters for dynamic values like tag paths, setpoints, and equipment identifiers: `{EquipmentPath}/Status` resolves at runtime.</memory>
+    <memory>Tag paths follow the format `[provider]path/to/tag`. The default provider is `[default]`. Example: `[default]Dairy/CoolingSystem/Compressor1/Status` reads the Status tag from Compressor1.</memory>
+    <memory>Organize tag paths following ISA-95 hierarchy: `[provider]Site/Area/Line/Cell/Equipment/Tag`. This structure supports filtering, alarming by area, and clear navigation in the tag browser.</memory>
+    <memory>UDT parameter bindings use curly braces in tag paths: `{BasePath}/{EquipmentName}/Status`. The parameters resolve at instance creation, enabling reusable UDT definitions across multiple equipment instances.</memory>
+    <memory>Apply ISA-101 High Performance HMI principles: use neutral gray backgrounds (`#888888` or similar) and reserve bright colors exclusively for abnormal conditions. This reduces operator fatigue and makes alarms immediately visible.</memory>
+    <memory>Follow ISA-101 information density guidelines: display only what operators need for the current task. Remove decorative elements, 3D effects, and photorealistic graphics that add visual noise without operational value.</memory>
+    <memory>Implement ISA-101 visual hierarchy: place critical information (alarms, key process values) prominently in the upper-left quadrant. Use size, position, and contrast—not color—to establish importance.</memory>
+    <memory>Design ISA-101 compliant navigation: use hierarchy-based navigation matching the equipment structure. Provide consistent navigation elements and role-appropriate access to screens.</memory>
+    <memory>Display ISA-101 alarm visualization: show active alarms with high contrast against the gray background. Include alarm priority, timestamp, and equipment context. Avoid alarm floods through proper configuration.</memory>
+    <memory>Configure ISA-18.2 alarm priorities: Priority 1 (Critical) requires immediate response with safety impact; Priority 2 (High) requires urgent response within minutes; Priority 3 (Medium) requires response within the shift; Priority 4 (Low) is for awareness only.</memory>
+    <memory>Implement ISA-18.2 alarm states: Active (unacknowledged alarm condition), Acknowledged (operator aware), Cleared (condition resolved), and Suppressed (intentionally hidden during known conditions). Track state transitions for compliance.</memory>
+    <memory>Apply ISA-18.2 deadband configuration to prevent nuisance alarms on noisy signals. Set deadband as a percentage of the alarm setpoint or an absolute value based on signal characteristics and process requirements.</memory>
+    <memory>Use ISA-18.2 shelving for temporary alarm suppression during known conditions (maintenance, startup, abnormal but expected states). Shelving must be time-limited and logged. Rationalization documents the justification for each configured alarm.</memory>
+    <memory>Structure tags following ISA-95 equipment hierarchy levels: Enterprise → Site → Area → Line → Cell → Equipment Module. This maps to Ignition tag paths as `[provider]Site/Area/Line/Cell/Equipment/Tag`.</memory>
+    <memory>Apply ISA-95 hierarchy in tag organization: group related equipment under Area and Line folders. This structure enables filtering by location, area-based alarm summaries, and hierarchical reporting.</memory>
+    <memory>Design UDTs reflecting ISA-95 hierarchy: create UDT definitions for Equipment Modules containing their tags, alarms, and parameters. Instantiate UDTs at the appropriate hierarchy level with parameters binding to the parent path.</memory>
+    <memory>Apply ISA-88 procedural model for batch processes: Recipes define the overall product, containing Procedures → Unit Procedures → Operations → Phases. Each phase is a discrete action (fill, heat, mix) with defined states.</memory>
+    <memory>Implement ISA-88 equipment model: Process Cell contains Units, which contain Equipment Modules and Control Modules. Map this to UDT hierarchy with equipment state machines and recipe parameter bindings.</memory>
+    <memory>Use ISA-88 phase state machine pattern: phases transition through Idle → Running → Complete states, with Paused, Held, and Aborted as exception states. Implement state transitions in Jython scripts using `system.tag.write()` calls.</memory>
+  </memories>
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>

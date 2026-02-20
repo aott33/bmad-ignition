@@ -41,6 +41,29 @@ memories:
   - "Organize tag paths following ISA-95 hierarchy: `[provider]Site/Area/Line/Cell/Equipment/Tag`. This structure supports filtering, alarming by area, and clear navigation in the tag browser."
   - "UDT parameter bindings use curly braces in tag paths: `{BasePath}/{EquipmentName}/Status`. The parameters resolve at instance creation, enabling reusable UDT definitions across multiple equipment instances."
 
+  # ISA-101 High Performance HMI
+  - "Apply ISA-101 High Performance HMI principles: use neutral gray backgrounds (`#888888` or similar) and reserve bright colors exclusively for abnormal conditions. This reduces operator fatigue and makes alarms immediately visible."
+  - "Follow ISA-101 information density guidelines: display only what operators need for the current task. Remove decorative elements, 3D effects, and photorealistic graphics that add visual noise without operational value."
+  - "Implement ISA-101 visual hierarchy: place critical information (alarms, key process values) prominently in the upper-left quadrant. Use size, position, and contrast—not color—to establish importance."
+  - "Design ISA-101 compliant navigation: use hierarchy-based navigation matching the equipment structure. Provide consistent navigation elements and role-appropriate access to screens."
+  - "Display ISA-101 alarm visualization: show active alarms with high contrast against the gray background. Include alarm priority, timestamp, and equipment context. Avoid alarm floods through proper configuration."
+
+  # ISA-18.2 Alarm Management
+  - "Configure ISA-18.2 alarm priorities: Priority 1 (Critical) requires immediate response with safety impact; Priority 2 (High) requires urgent response within minutes; Priority 3 (Medium) requires response within the shift; Priority 4 (Low) is for awareness only."
+  - "Implement ISA-18.2 alarm states: Active (unacknowledged alarm condition), Acknowledged (operator aware), Cleared (condition resolved), and Suppressed (intentionally hidden during known conditions). Track state transitions for compliance."
+  - "Apply ISA-18.2 deadband configuration to prevent nuisance alarms on noisy signals. Set deadband as a percentage of the alarm setpoint or an absolute value based on signal characteristics and process requirements."
+  - "Use ISA-18.2 shelving for temporary alarm suppression during known conditions (maintenance, startup, abnormal but expected states). Shelving must be time-limited and logged. Rationalization documents the justification for each configured alarm."
+
+  # ISA-95 Equipment Hierarchy
+  - "ISA-95 defines six equipment hierarchy levels: Enterprise → Site → Area → Line → Cell → Equipment Module. Use this model when designing UDT hierarchies and organizing tag folders for consistent structure across projects."
+  - "Apply ISA-95 hierarchy for reporting and filtering: group equipment under Area and Line folders to enable area-based alarm summaries, production reports by line, and hierarchical navigation in the tag browser."
+  - "Design UDTs reflecting ISA-95 hierarchy: create UDT definitions for Equipment Modules containing their tags, alarms, and parameters. Instantiate UDTs at the appropriate hierarchy level with parameters binding to the parent path."
+
+  # ISA-88 Batch Control (when applicable)
+  - "For batch process projects (food & beverage, pharmaceuticals, chemicals), apply ISA-88 procedural model: Recipes define the overall product, containing Procedures → Unit Procedures → Operations → Phases. Each phase is a discrete action (fill, heat, mix) with defined states."
+  - "Implement ISA-88 equipment model: Process Cell contains Units, which contain Equipment Modules and Control Modules. Map this to UDT hierarchy with equipment state machines and recipe parameter bindings."
+  - "Use ISA-88 phase state machine pattern: phases transition through Idle → Running → Complete states, with Paused, Held, and Aborted as exception states. Implement state transitions in Jython scripts using `system.tag.write()` calls."
+
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected
 menu: []
