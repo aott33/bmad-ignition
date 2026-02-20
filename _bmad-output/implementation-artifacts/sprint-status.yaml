@@ -45,7 +45,7 @@ development_status:
   1-1-populate-dev-agent-memories-platform-constraints: done
   1-2-populate-dev-agent-memories-isa-standards: done
   1-3-populate-dev-agent-critical-actions: done
-  1-4-populate-dev-agent-tooling-integration: backlog
+  1-4-populate-dev-agent-tooling-integration: done
   1-5-validate-dev-agent-behavior: backlog
   epic-1-retrospective: optional
 

@@ -30,6 +30,11 @@ critical_actions:
   - "Respect IT/OT network boundaries — do not create connections between zones without explicit authorization"
   - "Flag all alarm priority changes, interlock modifications, and safety-critical configurations for human engineering review"
 
+  # Tooling Workflow Actions
+  - "Check ignition.nvim LSP diagnostics for zero errors before running ignition-lint"
+  - "Follow the validation sequence: LSP check → ignition-lint → Gateway auto-detects changes → Designer verification"
+  - "Resolve validation errors at the earliest stage — fix LSP errors before lint, fix lint errors before Gateway pickup"
+
 # Add persistent memories for the agent
 memories:
   # Jython 2.7 Syntax Constraints
@@ -77,6 +82,26 @@ memories:
   - "For batch process projects (food & beverage, pharmaceuticals, chemicals), apply ISA-88 procedural model: Recipes define the overall product, containing Procedures → Unit Procedures → Operations → Phases. Each phase is a discrete action (fill, heat, mix) with defined states."
   - "Implement ISA-88 equipment model: Process Cell contains Units, which contain Equipment Modules and Control Modules. Map this to UDT hierarchy with equipment state machines and recipe parameter bindings."
   - "Use ISA-88 phase state machine pattern: phases transition through Idle → Running → Complete states, with Paused, Held, and Aborted as exception states. Implement state transitions in Jython scripts using `system.tag.write()` calls."
+
+  # ignition-lint Tooling Integration
+  - "Run `ignition-lint path/to/view.json` to validate Perspective views before Designer import. The CLI validates JSON structure, binding syntax, and component hierarchy against the Perspective schema."
+  - "ignition-lint validates Perspective `view.json` files for structure errors, malformed bindings, and missing required properties. Run it against `ignition/projects/<ProjectName>/com.inductiveautomation.perspective/views/` to validate all views."
+  - "When ignition-lint reports errors, check for: invalid JSON syntax (missing commas, brackets), malformed binding configurations, incorrect component type names, and missing required properties. Fix errors before importing to Designer."
+
+  # ignition.nvim LSP Integration
+  - "ignition.nvim provides real-time LSP diagnostics for Jython scripts in Neovim. It catches syntax errors, undefined variables, and Jython 2.7 compliance issues as you type, before Gateway import."
+  - "Use ignition.nvim LSP diagnostics to validate Jython scripts for Python 3 syntax that won't work in Jython 2.7: f-strings, type hints, walrus operator. Fix LSP errors before proceeding to ignition-lint or Designer import."
+  - "ignition.nvim integrates with Neovim/LazyVim for Ignition development. LSP features include real-time error detection, code completion for Ignition system functions, and Jython 2.7 syntax validation."
+
+  # Validation Workflow
+  - "Follow the validation workflow sequence: (1) edit files in Neovim, (2) check ignition.nvim LSP diagnostics, (3) run ignition-lint on Perspective views, (4) Gateway auto-detects file changes. Open Designer to verify rendering and test with live tag data."
+  - "Projects are stored in the filesystem and the Gateway continuously monitors for changes — no manual import needed for file-based resources (views, scripts). Designer verification catches runtime issues the linter cannot detect, like binding errors with live tags."
+  - "When validation fails, resolve errors at the earliest stage: fix LSP errors before running ignition-lint, fix lint errors before Gateway pickup. Earlier detection means faster resolution and fewer Gateway-side debugging cycles."
+
+  # Version Control Integration
+  - "Projects are file-based and can be committed directly to Git. Tags and Images are stored in Ignition's internal SQLite database and require explicit export before version control."
+  - "The ignition-git-module adds Git integration inside Designer: commit popup on save, push/pull toolbar, and automated export of Gateway config (tags, images, themes). Install it for streamlined version control workflows."
+  - "For automated tag export, use `system.tag.exportTags(filePath, tagPaths)` in a Gateway Event script on Designer save, or use the ignition-git-module which handles this automatically."
 
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected
