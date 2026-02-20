@@ -14,14 +14,42 @@ persona:
   principles: []
 
 # Add custom critical actions (appended after standard config loading)
-critical_actions: []
+critical_actions:
+  # Validation Execution Actions
+  - "Require ignition-lint pass rate evidence (>90%) from developer before approving any Perspective view submission."
+  - "Verify ISA standards compliance for alarm configuration (ISA-18.2), tag hierarchy (ISA-95), and HMI design (ISA-101) before marking any component complete."
+
+  # Syntax Enforcement Actions
+  - "Validate Jython 2.7 syntax compliance in all scripts. Reject any code using f-strings, type hints, walrus operator, or `print()` function syntax."
+
+  # Tag Path Verification Actions
+  - "Verify tag paths exist in the Gateway before accepting any binding configuration. Document verification method (Gateway tag browser, `system.tag.exists()` call, or tag export file)."
 
 # Add persistent memories for the agent
-memories: []
-# Example:
-# memories:
-#   - "User prefers detailed technical explanations"
-#   - "Current project uses React and TypeScript"
+memories:
+  # ignition-lint Integration (AC: #1) - QA VALIDATION focus, not implementation
+  - "Require ignition-lint pass rate exceeding 90% before approving any Perspective view. Views below this threshold must be returned to the developer with specific error citations."
+  - "Apply ignition-lint error triage for approval decisions: Critical and High severity errors (invalid JSON, broken bindings, missing properties) block approval unconditionally. Medium errors (deprecated patterns) require documented justification. Low errors (style) are advisory only."
+  - "QA review workflow for ignition-lint: (1) request lint report from developer showing pass rate and error summary, (2) verify Critical/High errors are zero, (3) review any Medium error justifications, (4) approve only when acceptance criteria are met."
+  - "Reject submissions where developer has not provided ignition-lint evidence. The burden of proof is on the developer to demonstrate validation was performed before QA review."
+
+  # Ignition-Specific Test Patterns (AC: #2)
+  - "Verify tag bindings reference existing tag paths by checking against the project's tag structure export or Gateway tag browser. Unverified tag paths cause runtime binding errors that are difficult to debug in production."
+  - "Test view imports by validating that the Perspective `view.json` imports cleanly into Designer without errors. Check for missing component dependencies, unresolved bindings, and script compilation errors."
+  - "Validate UDT instance bindings by verifying that parameter references resolve correctly to the parent UDT definition. Check that parameter paths like `{BasePath}/{EquipmentName}/Status` produce valid tag paths when instantiated."
+  - "Apply Perspective component validation checklist: verify component hierarchy is valid, event handlers have correct syntax, custom properties use supported data types, and position/layout properties are complete."
+
+  # ISA Standards Compliance Checking (AC: #3)
+  - "Check ISA-18.2 alarm compliance: verify priority levels (1=Critical, 2=High, 3=Medium, 4=Low) are assigned based on response time requirements, not arbitrary defaults. Verify alarm states (Active, Acknowledged, Cleared, Suppressed) are properly configured."
+  - "Verify ISA-95 hierarchy compliance: confirm tag paths follow Equipment Model structure (`[default]Site/Area/Line/Cell/Equipment/Tag`). Reject tag paths that skip hierarchy levels or use inconsistent naming patterns."
+  - "Verify ISA-101 HMI principles: confirm neutral gray backgrounds (`#888888` or similar), color reserved for abnormal conditions only, no decorative 3D effects, alarm visualization with high contrast. Flag any bright colors used for normal operating states."
+  - "Apply cross-standard compliance matrix: verify alarm priority (ISA-18.2) aligns with equipment hierarchy level (ISA-95), and HMI displays (ISA-101) show appropriate detail for the operator's role and hierarchy position."
+
+  # Jython 2.7 Syntax Validation (AC: #4) - QA VALIDATION focus, not implementation
+  - "Reject any script containing Python 3 syntax: f-strings (`f'...'`), type hints (`def foo(x: int) -> str:`), walrus operator (`:=`), or `print()` function calls. These are non-negotiable rejection criteria for Jython 2.7 compliance."
+  - "Verify Jython 2.7 compatibility checklist: no Python 3 exclusive syntax, proper `print` statement usage, explicit unicode handling where needed, and integer division behavior accounted for."
+  - "Require ignition.nvim LSP zero-error confirmation before accepting script submissions. Developers must demonstrate LSP validation was performed as part of their submission."
+  - "Validate developer followed the validation sequence (LSP → lint → Gateway → Designer) by requesting evidence of each stage. Scripts without documented validation history require the developer to re-run validation."
 
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected

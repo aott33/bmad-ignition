@@ -1,41 +1,58 @@
-# Agent Customization
-# Customize any section below - all are optional
-
-# Override agent name
-agent:
-  metadata:
-    name: ""
-
-# Replace entire persona (not merged)
-persona:
-  role: ""
-  identity: ""
-  communication_style: ""
-  principles: []
+# Agent Customization — UX Designer Agent (bmad-ignition)
+# Ignition/IA domain knowledge for ISA-101 High Performance HMI design
+# See: _bmad-output/planning-artifacts/architecture.md#Memory Formatting
 
 # Add custom critical actions (appended after standard config loading)
-critical_actions: []
+critical_actions:
+  # Safety Awareness Actions
+  - "Note safety-critical displays in design documentation — flag screens that show safety-related equipment, emergency stops, or interlock status. These designs require engineering review before implementation."
+
+  - "Document engineering review requirements for any designs affecting alarm visualization, priority displays, or operator response workflows. Changes to how operators perceive alarms or process state can have safety implications."
+
+  # Design Validation Actions
+  - "Verify ISA-101 compliance in all screen designs: check for gray/neutral backgrounds, color reserved for abnormal only, analog over digital representations, consistent navigation, and appropriate information density. Non-compliant designs increase operator fatigue and reduce situational awareness."
 
 # Add persistent memories for the agent
-memories: []
-# Example:
-# memories:
-#   - "User prefers detailed technical explanations"
-#   - "Current project uses React and TypeScript"
+memories:
+  # ISA-101 High Performance HMI Principles
+  - "Apply ISA-101 High Performance HMI principles: use gray or neutral backgrounds (`#808080` range) to reduce visual fatigue during extended operator shifts. Reserve color exclusively for abnormal conditions and alarms — normal operation should appear calm and monochromatic."
+
+  - "Design color usage per ISA-101: color indicates abnormal conditions ONLY. Green does not mean 'good' in industrial HMI — use gray for normal states. Red indicates critical alarms, yellow indicates warnings. This color discipline ensures alarms are immediately visible against neutral backgrounds."
+
+  - "Prefer analog representations over digital values per ISA-101: use bar graphs, sparklines, and trend displays to show process values. Operators recognize patterns and deviations faster from analog shapes than from numeric displays. Reserve digital readouts for precise values when needed."
+
+  - "Apply ISA-101 alarm color conventions: red for critical alarms requiring immediate action, yellow/amber for warnings requiring attention, gray for acknowledged or cleared states. Avoid green for 'normal' — the absence of color IS normal. Use blinking sparingly and only for unacknowledged critical alarms."
+
+  # Navigation Flow Patterns
+  - "Design navigation following ISA-95 equipment hierarchy: Site overview → Area selection → Line/Cell views → Equipment detail. This matches how operators think about the process and reduces clicks to reach relevant screens. Each navigation level provides context before drilling deeper."
+
+  - "Design role-based navigation patterns: operators need quick access to their assigned areas, supervisors need cross-area visibility, engineers need configuration access. Use role-based views and permissions to show appropriate navigation options for each user type."
+
+  - "Place navigation elements consistently across all screens: use top bars for global navigation (site, area selection), side panels for local navigation (equipment within current area), and breadcrumbs for hierarchy awareness. Operators should never be 'lost' in the application."
+
+  - "Design drill-down patterns from overview to detail: Overview screens show area status with clickable regions, clicking navigates to area detail, area screens show equipment status with clickable elements, clicking navigates to equipment control screens. Each level reveals more detail."
+
+  # Industrial Display Visual Patterns
+  - "Apply ISA-101 information density guidelines: every element on screen must serve an operational purpose. Remove decorative graphics, 3D effects, photorealistic images, and animated elements that add visual noise without helping operators understand process state or make decisions."
+
+  - "Design alarm visualization with dedicated screen zones: reserve a consistent location (typically top banner or right panel) for active alarms across all screens. Show alarm priority, timestamp, equipment context, and acknowledgment status. Operators must see alarm status regardless of which screen they're viewing."
+
+  - "Design trend displays following ISA-101 principles: use consistent time scales (1 hour, 8 hours, 24 hours as standard options), appropriate data density to show patterns without clutter, and contextual reference lines for setpoints and limits. Trends should reveal process behavior at a glance."
+
+  - "Use state-based symbols for equipment status representation: show equipment states (Running, Stopped, Faulted, Maintenance) through simple geometric shapes with color indicating abnormal conditions. Avoid animations like spinning motors or flowing pipes — static symbols with clear state indication are more effective."
+
+  # Perspective-Specific Layout Guidance
+  - "Design Perspective view hierarchy: use views as complete screens, `embedded view` components for reusable sections (alarm banners, navigation bars, equipment faceplates), and containers (`flex container`, `coordinate container`) for layout structure. Embedded views enable consistent patterns across screens."
+
+  - "Design responsive layouts in Perspective using `flex container` as the primary layout mechanism. Use flex direction, grow/shrink properties, and breakpoint configurations to adapt layouts for different screen sizes. Control room monitors, tablets, and mobile devices may all access the same views."
+
+  - "Create view templates for common screen patterns: Overview template (area status grid, alarm summary, navigation), Detail template (equipment control, trends, parameters), and Popup template (confirmations, data entry, configuration). Templates ensure consistent user experience across the application."
+
+  - "Design for property binding patterns in Perspective: use view parameters to pass equipment IDs and tag paths, enabling single view definitions to display any equipment instance. Design views with clear parameter contracts: what parameters are required, what format they expect, how they drive component bindings."
 
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected
 menu: []
-# Example:
-# menu:
-#   - trigger: my-workflow
-#     workflow: "{project-root}/custom/my.yaml"
-#     description: My custom workflow
 
 # Add custom prompts (for action="#id" handlers)
 prompts: []
-# Example:
-# prompts:
-# - id: my-prompt
-#   content: |
-#     Prompt instructions here

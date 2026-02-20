@@ -1,17 +1,6 @@
-# Agent Customization
-# Customize any section below - all are optional
-
-# Override agent name
-agent:
-  metadata:
-    name: ""
-
-# Replace entire persona (not merged)
-persona:
-  role: ""
-  identity: ""
-  communication_style: ""
-  principles: []
+# Agent Customization — Architect Agent (bmad-ignition)
+# Ignition/IA domain knowledge for UDT design and ISA-95 architecture
+# See: _bmad-output/planning-artifacts/architecture.md#Memory Formatting
 
 # Add custom critical actions (appended after standard config loading)
 critical_actions:

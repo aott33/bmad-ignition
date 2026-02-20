@@ -48,14 +48,14 @@ development_status:
   2-1-populate-analyst-agent-ia-requirements-discovery: done
   2-2-populate-pm-agent-isa-95-and-ignition-awareness: done
   2-3-populate-architect-agent-data-modeling-and-udt-patterns: done
-  2-4-validate-planning-workflow: backlog
+  2-4-validate-planning-workflow: done
   epic-2-retrospective: optional
 
   # Epic 3: Design & Coordination — UX Designer, SM, QA
-  epic-3: backlog
-  3-1-populate-ux-designer-agent-isa-101-hmi-principles: backlog
-  3-2-populate-sm-agent-parallel-execution-coordination: backlog
-  3-3-populate-qa-agent-ignition-validation-patterns: backlog
+  epic-3: in-progress
+  3-1-populate-ux-designer-agent-isa-101-hmi-principles: done
+  3-2-populate-sm-agent-parallel-execution-coordination: done
+  3-3-populate-qa-agent-ignition-validation-patterns: done
   3-4-validate-design-coordination-agents: backlog
   epic-3-retrospective: optional
 

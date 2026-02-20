@@ -5,7 +5,9 @@
       "Bash(mkdir:*)",
       "Bash(tree:*)",
       "Bash(node -e:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(npx yaml-lint \"_bmad/_config/agents/bmm-qa.customize.yaml\")",
+      "Bash(npx bmad-method install)"
     ]
   }
 }
