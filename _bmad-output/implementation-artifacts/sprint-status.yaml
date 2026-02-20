@@ -44,10 +44,10 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Planning Agents — Analyst, PM, Architect
-  epic-2: backlog
-  2-1-populate-analyst-agent-ia-requirements-discovery: backlog
-  2-2-populate-pm-agent-isa-95-and-ignition-awareness: backlog
-  2-3-populate-architect-agent-data-modeling-and-udt-patterns: backlog
+  epic-2: in-progress
+  2-1-populate-analyst-agent-ia-requirements-discovery: done
+  2-2-populate-pm-agent-isa-95-and-ignition-awareness: done
+  2-3-populate-architect-agent-data-modeling-and-udt-patterns: done
   2-4-validate-planning-workflow: backlog
   epic-2-retrospective: optional
 

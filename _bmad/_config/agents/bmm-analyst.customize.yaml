@@ -1,41 +1,59 @@
-# Agent Customization
-# Customize any section below - all are optional
-
-# Override agent name
-agent:
-  metadata:
-    name: ""
-
-# Replace entire persona (not merged)
-persona:
-  role: ""
-  identity: ""
-  communication_style: ""
-  principles: []
+# Agent Customization — Analyst Agent (bmad-ignition)
+# Ignition/IA domain knowledge for requirements discovery
+# See: _bmad-output/planning-artifacts/architecture.md#Memory Formatting
 
 # Add custom critical actions (appended after standard config loading)
-critical_actions: []
+critical_actions:
+  # Safety Scope Documentation
+  - "Document SIS (Safety Instrumented System) scope boundaries explicitly — note which equipment, interlocks, or functions are safety-related and require engineering authority"
+
+  # Equipment Inventory Completeness
+  - "Verify equipment inventory completeness — confirm all major equipment categories (vessels, rotating equipment, valves, instrumentation) are captured before finalizing requirements"
+
+  # Alarm Philosophy Capture
+  - "Ask about alarm philosophy early in discovery — capture target alarm count, priority scheme, shelving needs, and rationalization status before proceeding to detailed requirements"
 
 # Add persistent memories for the agent
-memories: []
-# Example:
-# memories:
-#   - "User prefers detailed technical explanations"
-#   - "Current project uses React and TypeScript"
+memories:
+  # SCADA/MES Scope Patterns
+  - "Ask whether the project is SCADA (monitoring and control focus) or MES (manufacturing execution with production tracking, scheduling, quality) or both. This distinction shapes requirements scope and integration needs."
 
-# Add custom menu items (appended to base menu)
-# Don't include * prefix or help/exit - auto-injected
-menu: []
-# Example:
-# menu:
-#   - trigger: my-workflow
-#     workflow: "{project-root}/custom/my.yaml"
-#     description: My custom workflow
+  - "Discover control system topology: What PLCs, DCS, or RTUs exist? What communication protocols (Modbus, OPC-UA, EtherNet/IP)? This determines tag counts and integration complexity."
 
-# Add custom prompts (for action="#id" handlers)
-prompts: []
-# Example:
-# prompts:
-# - id: my-prompt
-#   content: |
-#     Prompt instructions here
+  - "Ask about data historian requirements: How long must data be retained? What resolution is needed? Are there regulatory retention requirements? This drives database sizing and archiving strategy."
+
+  - "Determine if the process is continuous (oil refinery, power plant) or batch (food & beverage, pharmaceuticals). Batch requires ISA-88 concepts; continuous focuses on steady-state monitoring."
+
+  # Equipment Type Questions
+  - "Ask about vessel and tank types: storage tanks, reactors, fermenters, heat exchangers, separators. Capture capacity and instrumentation level (simple level/temp vs. full agitation/pressure)."
+
+  - "Discover rotating equipment: motors, pumps, compressors, conveyors, agitators, blowers, fans. Ask about VFD control, runtime tracking, and vibration monitoring. Rotating equipment often drives the largest alarm populations."
+
+  - "Identify valves and instrumentation patterns: control valves, on/off valves, flow meters, level transmitters, temperature sensors, pressure transmitters. Ask about calibration requirements and instrument tagging standards."
+
+  - "Map to ISA-95 equipment hierarchy: Enterprise → Site → Area → Line → Cell → Equipment Module. Ask about existing organizational structure for reporting and alarming."
+
+  # Alarm Philosophy Discovery
+  - "Ask about current alarm count and target: How many alarms are configured today? What's the target alarms-per-hour-per-operator? ISA-18.2 recommends ~6 alarms per hour maximum."
+
+  - "Discover the priority scheme: How many alarm priority levels? ISA-18.2 recommends 4 levels (Critical, High, Medium, Low). Ask what response time expectations exist for each priority."
+
+  - "Ask about shelving and suppression: Do operators need to shelve alarms during maintenance? What's the maximum shelving duration? Is shelving logged for compliance? This affects alarm pipeline design."
+
+  - "Discover alarm rationalization status: Has formal rationalization been performed per ISA-18.2? Are there consequence-based justifications for each alarm? This indicates alarm management maturity."
+
+  # Operator Workflow Questions
+  - "Ask about shift patterns and handoff: How many shifts? What's the handoff procedure? Do operators need a shift summary showing unacknowledged alarms and outstanding issues?"
+
+  - "Discover alarm acknowledgment workflows: Can operators acknowledge from mobile devices? Do certain alarms require supervisor acknowledgment? Are there regulatory requirements for acknowledgment logging?"
+
+  - "Identify operator roles and access levels: Control room operators, field operators, maintenance technicians, supervisors, engineers. Ask about role-based access needs for different screens and capabilities."
+
+  - "Ask about control room configuration: How many operator stations? Multiple monitors per station? Do operators oversee single areas or multiple areas? This influences navigation design."
+
+  # Safety Awareness
+  - "Identify SIS (Safety Instrumented System) scope boundaries: Ask which equipment, interlocks, or functions are safety-related. Safety systems require separate engineering authority and explicit documentation."
+
+  - "Ask about engineering authority requirements: Who has authority to modify safety-related configurations? Are there MOC (Management of Change) procedures? Document these boundaries clearly."
+
+  - "Discover IT/OT network boundaries: Are there separate networks for corporate IT and operational technology? What's the DMZ architecture? This affects data flow and integration architecture."
