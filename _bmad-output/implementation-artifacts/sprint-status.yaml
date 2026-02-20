@@ -42,7 +42,7 @@ story_location: "{project-root}/_bmad-output/implementation-artifacts"
 development_status:
   # Epic 1: Foundation — Dev Agent Pilot
   epic-1: in-progress
-  1-1-populate-dev-agent-memories-platform-constraints: review
+  1-1-populate-dev-agent-memories-platform-constraints: done
   1-2-populate-dev-agent-memories-isa-standards: backlog
   1-3-populate-dev-agent-critical-actions: backlog
   1-4-populate-dev-agent-tooling-integration: backlog
