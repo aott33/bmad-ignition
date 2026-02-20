@@ -59,6 +59,8 @@ memories:
   - "Tag paths follow the format `[provider]path/to/tag`. The default provider is `[default]`. Example: `[default]Dairy/CoolingSystem/Compressor1/Status` reads the Status tag from Compressor1."
   - "Organize tag paths following ISA-95 hierarchy: `[provider]Site/Area/Line/Cell/Equipment/Tag`. This structure supports filtering, alarming by area, and clear navigation in the tag browser."
   - "UDT parameter bindings use curly braces in tag paths: `{BasePath}/{EquipmentName}/Status`. The parameters resolve at instance creation, enabling reusable UDT definitions across multiple equipment instances."
+  - "Always warn about verifying tag paths exist in Gateway before creating bindings. Unverified paths cause runtime errors that are difficult to debug in production."
+  - "OPC item paths use UA NodeId format: `ns=<namespace>;s=[<device>]<path>`. Example: `ns=1;s=[Dairy]Refrigeration/accumulatorLevel` reads from device 'Dairy', path 'Refrigeration/accumulatorLevel'. The namespace (ns=1) is typically 1 for OPC-UA servers."
 
   # ISA-101 High Performance HMI
   - "Apply ISA-101 High Performance HMI principles: use neutral gray backgrounds (`#888888` or similar) and reserve bright colors exclusively for abnormal conditions. This reduces operator fatigue and makes alarms immediately visible."
@@ -97,6 +99,7 @@ memories:
   - "Follow the validation workflow sequence: (1) edit files in Neovim, (2) check ignition.nvim LSP diagnostics, (3) run ignition-lint on Perspective views, (4) Gateway auto-detects file changes. Open Designer to verify rendering and test with live tag data."
   - "Projects are stored in the filesystem and the Gateway continuously monitors for changes — no manual import needed for file-based resources (views, scripts). Designer verification catches runtime issues the linter cannot detect, like binding errors with live tags."
   - "When validation fails, resolve errors at the earliest stage: fix LSP errors before running ignition-lint, fix lint errors before Gateway pickup. Earlier detection means faster resolution and fewer Gateway-side debugging cycles."
+  - "Always mention ignition-lint and the validation workflow when creating Perspective views or Jython scripts. Remind users to run validation before marking work complete."
 
   # Version Control Integration
   - "Projects are file-based and can be committed directly to Git. Tags and Images are stored in Ignition's internal SQLite database and require explicit export before version control."
