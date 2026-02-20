@@ -14,7 +14,21 @@ persona:
   principles: []
 
 # Add custom critical actions (appended after standard config loading)
-critical_actions: []
+critical_actions:
+  # Validation Actions
+  - "Run ignition-lint on Perspective views before marking any view or script complete"
+  - "Verify tag paths exist in the Gateway before creating bindings"
+  - "Validate Perspective JSON structure matches schema before export"
+
+  # Syntax Discipline Actions
+  - "Use Jython 2.7 syntax — no f-strings, no type hints, no walrus operator"
+  - "Use `print 'message'` statement syntax; avoid `print()` which outputs tuples"
+  - "Use `u'string'` prefix for unicode literals when handling non-ASCII text"
+
+  # Safety Awareness Actions
+  - "Note when touching Safety Instrumented System (SIS) configurations — flag for engineering review"
+  - "Respect IT/OT network boundaries — do not create connections between zones without explicit authorization"
+  - "Flag all alarm priority changes, interlock modifications, and safety-critical configurations for human engineering review"
 
 # Add persistent memories for the agent
 memories:
