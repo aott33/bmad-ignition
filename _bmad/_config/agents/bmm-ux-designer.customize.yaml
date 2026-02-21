@@ -4,13 +4,18 @@
 
 # Add custom critical actions (appended after standard config loading)
 critical_actions:
+  # ISA-101 Compliance Actions (MANDATORY)
+  - "ALWAYS apply ISA-101 High Performance HMI principles in every design decision. This is non-negotiable for industrial HMI: gray/neutral backgrounds, color reserved for abnormal conditions ONLY, analog representations over digital, no decorative graphics. Designs that violate ISA-101 create operator fatigue and safety risks."
+
+  - "Before finalizing any screen design, verify ISA-101 compliance checklist: (1) Background is gray/neutral (#808080 range), (2) Color appears ONLY for alarms/abnormal states, (3) Green is NOT used for 'normal' or 'good', (4) Analog indicators used where appropriate, (5) No 3D effects or decorative elements, (6) Information density serves operator tasks."
+
   # Safety Awareness Actions
   - "Note safety-critical displays in design documentation — flag screens that show safety-related equipment, emergency stops, or interlock status. These designs require engineering review before implementation."
 
   - "Document engineering review requirements for any designs affecting alarm visualization, priority displays, or operator response workflows. Changes to how operators perceive alarms or process state can have safety implications."
 
-  # Design Validation Actions
-  - "Verify ISA-101 compliance in all screen designs: check for gray/neutral backgrounds, color reserved for abnormal only, analog over digital representations, consistent navigation, and appropriate information density. Non-compliant designs increase operator fatigue and reduce situational awareness."
+  # Perspective Component Selection Actions
+  - "Use native Perspective components before designing custom solutions. Check if Alarm Status Table, Power Chart, Symbol components (Motor, Pump, Valve, Vessel), or other built-in components meet requirements. Custom components add maintenance burden and may lack accessibility features."
 
 # Add persistent memories for the agent
 memories:
@@ -49,6 +54,57 @@ memories:
   - "Create view templates for common screen patterns: Overview template (area status grid, alarm summary, navigation), Detail template (equipment control, trends, parameters), and Popup template (confirmations, data entry, configuration). Templates ensure consistent user experience across the application."
 
   - "Design for property binding patterns in Perspective: use view parameters to pass equipment IDs and tag paths, enabling single view definitions to display any equipment instance. Design views with clear parameter contracts: what parameters are required, what format they expect, how they drive component bindings."
+
+  # Perspective Container Components
+  - "Use `Flex Container` as the primary layout component for responsive industrial HMI. Flex containers support direction (row/column), alignment, gap spacing, and wrap behavior. Nest flex containers to create complex responsive layouts that adapt to control room monitors or tablets."
+
+  - "Use `Breakpoint Container` for screens requiring distinct layouts at different sizes. Define breakpoints (e.g., 1920px, 1440px, 1024px) with different child arrangements for each. Critical for applications accessed on both control room monitors and mobile devices."
+
+  - "Use `Coordinate Container` for P&ID-style screens where components must be positioned at exact pixel locations. Coordinate containers don't reflow — components stay where placed. Best for process graphics, equipment layouts, and screens viewed on fixed-size displays."
+
+  - "Use `Tab Container` to organize related content into switchable panels (e.g., Equipment Status | Trends | Alarms | Configuration). Each tab holds a separate view. Useful for equipment detail screens with multiple information categories."
+
+  # Perspective Alarm Components (ISA-18.2)
+  - "Use `Alarm Status Table` component for displaying active alarms — this is the primary ISA-18.2 alarm display. Configure columns for priority, timestamp, source, display path, and state. Supports acknowledgment actions, filtering, and sorting. Place in persistent alarm banner or dedicated alarm view."
+
+  - "Use `Alarm Journal Table` component for alarm history and analysis. Shows historical alarm events with transitions (Active, Acknowledged, Cleared). Essential for shift handoff reports, troubleshooting, and ISA-18.2 alarm performance metrics."
+
+  - "Perspective does NOT support native audio alarm sounds — do not design audio alerts in the HMI layer. Audible alarms are implemented at the PLC/hardware level (annunciators, stack lights with buzzers, horn relays). HMI alarm design focuses on visual notification only: color, banner placement, blinking for unacknowledged critical alarms."
+
+  # Perspective Trend and Data Display Components
+  - "Use `Power Chart` for interactive historical trending with multiple pens, zoom/pan, time range selection, and data export. Power Chart is the primary trend component for maintenance and troubleshooting — supports tag browsing and pen configuration at runtime."
+
+  - "Use `Sparkline` component for inline mini-trends showing recent history (e.g., last 8 hours) without navigation. Sparklines are lightweight and ideal for embedding in equipment cards or overview screens to show value trajectory at a glance."
+
+  - "Use `Table` component for tabular data display — equipment lists, batch records, production summaries. Configure columns, sorting, filtering, row selection, and cell rendering. Tables support both static datasets and dynamic tag/query bindings."
+
+  - "Use `Linear Scale` for analog value representation per ISA-101. Linear scales show a value position on a graduated scale with optional alarm zones and setpoint markers. More effective than numeric displays for operator pattern recognition."
+
+  # Perspective Symbol Components (Equipment Visualization)
+  - "Use built-in `Symbol` components for standard equipment representation: `Motor` (animated run/stop), `Pump` (animated flow), `Valve` (open/closed/throttled positions), `Vessel` (tank with level fill), `Sensor` (measurement point). Symbols have standardized properties for state binding."
+
+  - "Use `Cylindrical Tank` or `Vessel` symbols for tank level visualization. Bind fill level (0-100%), configure alarm colors for high/low limits. Prefer simple 2D vessel representations over photorealistic 3D graphics per ISA-101."
+
+  # Perspective Embedding and Reuse Components
+  - "Use `Embedded View` component to create reusable faceplates, banners, and widgets. Pass parameters (equipment ID, tag path) to the embedded view. A single faceplate view definition can represent any equipment instance, reducing maintenance and ensuring consistency."
+
+  - "Use `Flex Repeater` to dynamically generate multiple instances of a view based on data. Ideal for equipment lists, alarm summaries, or any repeating pattern. Bind instance count and parameters to a dataset or tag array — the repeater creates views automatically."
+
+  - "Configure `View dropConfig` to enable drag-and-drop UDT binding. When a UDT instance is dragged onto a view, parameters are automatically populated with tag paths. This accelerates screen building and ensures correct tag binding patterns."
+
+  # Perspective Input Components (Operator Interaction)
+  - "Use `Button` component for operator actions (Start, Stop, Acknowledge). Style buttons consistently: primary actions prominent, destructive actions (Emergency Stop) in red, disabled states clearly grayed. Ensure 44x44px minimum touch targets."
+
+  - "Use `Numeric Entry Field` for setpoint entry and parameter adjustment. Configure min/max limits, decimal places, and units display. Validate input ranges before writing to tags. Consider confirmation dialogs for critical setpoint changes."
+
+  - "Use `Toggle Switch` or `Multi-State Button` for mode selection (Hand/Off/Auto, Enable/Disable). Multi-state buttons show the current state and available options clearly. Bind to integer tags representing equipment modes."
+
+  - "Use `Dropdown` for selection from a list of options (recipe selection, equipment selection, alarm filter). Bind options to a dataset for dynamic lists. Dropdowns conserve screen space while providing clear selection UI."
+
+  # Perspective Navigation Components
+  - "Use `Menu Tree` or `Horizontal Menu` for primary navigation structure. Menu Tree supports hierarchical navigation matching ISA-95 structure (Site > Area > Line > Equipment). Configure menu items with icons, labels, and target views."
+
+  - "Use `Link` component for contextual navigation — jump to related views, equipment detail, or external documentation. Style links consistently and indicate navigation targets clearly."
 
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected

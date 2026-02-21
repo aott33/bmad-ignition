@@ -14,6 +14,9 @@ critical_actions:
   # UDT Hierarchy Validation Actions
   - "Validate UDT hierarchy designs against ISA-95 equipment model before finalizing architecture — confirm Equipment Modules map to UDT definitions and inheritance reflects physical equipment relationships"
 
+  # Master Data Model Actions
+  - "Design database-driven tag instantiation as the default architecture pattern — the ISA-95 equipment hierarchy should be modeled in SQL tables first, then UDT instances created from database queries. This enables scalable deployment, cross-system consistency, and proper data governance."
+
 # Add persistent memories for the agent
 memories:
   # ISA-95 Equipment Hierarchy (4 memories)
@@ -42,6 +45,19 @@ memories:
   - "Design UDT parameter binding patterns for tag paths: use `{BasePath}/{EquipmentName}/Tag` pattern in UDT definitions. Parameters resolve at instance creation, enabling portable UDT definitions. Document parameter naming conventions in architecture."
 
   - "Specify tag path verification requirements in architecture: before creating Perspective bindings or Jython scripts, verify tag paths exist in the Gateway. Document which tags must exist before each development phase. Unverified paths cause runtime errors difficult to debug in production."
+
+  # Database-Driven Master Data Model (6 memories)
+  - "Design a centralized SQL database as the **single source of truth** for the equipment model. Abstract the ISA-95 hierarchy into database tables rather than embedding it only in Ignition tags. This master data model can be consumed by ERP (Level 4), MES (Level 3), and SCADA (Level 2) systems, enabling cross-system consistency and data governance."
+
+  - "Design the master data schema with these core tables: `Equipment` (plant hierarchy instances with Enterprise/Site/Area/Line/Cell/Equipment columns and Parent ID for hierarchy), `EquipmentType` (equipment classes mapping to UDT definition names), `DataType` (UDT metadata), `DataTypeProperties` (tags and parameters within each UDT). This schema drives tag instantiation."
+
+  - "Model equipment properties as both static attributes (capacity, material, manufacturer) and dynamic data (setpoints, actual values, PLC addresses). Store static properties in database columns; dynamic properties link to UDT tags. This separation enables database-driven configuration while tags handle real-time data."
+
+  - "Use database queries to drive UDT instantiation: write Jython scripts or Gateway Event scripts that query the Equipment table, retrieve equipment type and properties, then create or update UDT instances with parameters populated from database values. This enables **scalable deployment** — add equipment by inserting rows, run script to create tags."
+
+  - "Design named queries for equipment navigation: `getEquipmentByArea`, `getEquipmentByType`, `getEquipmentHierarchy`. Perspective views bind to these queries for dynamic equipment lists, drill-down navigation, and maintenance tracking. The database becomes the source for both tag structure AND HMI navigation."
+
+  - "Document the master data governance process in architecture: define who owns equipment records, how changes are versioned, and how updates propagate to Ignition tags. This is critical for multi-site deployments, acquisitions, and enterprise-wide consistency."
 
   # Database Schema Patterns (3 memories)
   - "Design equipment metadata tables with ISA-95 alignment: include `equipment_id`, `equipment_name`, `equipment_type`, `parent_path`, `isa95_level`, `area`, `line`, `cell`. This enables database-driven navigation, equipment lists, and maintenance tracking that mirrors the tag hierarchy."
