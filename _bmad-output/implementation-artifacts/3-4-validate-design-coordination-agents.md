@@ -297,4 +297,117 @@ Claude Opus 4.5 (claude-opus-4-5-20251101)
 - Related: The epics have Story 1.1 "Initialize project structure" but it focuses on view folders, not Gateway/Designer setup
 - Decision needed: Where does deployment knowledge live in the BMAD workflow?
 
+**Epic Ordering & Ignition Development Workflow Gap:**
+- The PM agent doesn't understand Ignition's "configure once, use everywhere" UDT pattern
+- **Current Problem:** Epics treat UDTs, alarms, and historian as separate concerns configured at different times:
+  - Epic 2-3: Create UDT definitions with OPC bindings only
+  - Epic 5.1: Go BACK to add alarm properties to existing UDTs
+  - Epic 6.1-6.3: Go BACK AGAIN to configure historian scan classes on those UDTs
+- **Why This Is Wrong:** In Ignition, a UDT definition should be created ONCE with ALL its properties:
+  - OPC bindings (where data comes from)
+  - Alarm configurations (ISA-18.2 properties, priorities, labels)
+  - Historian settings (scan class assignments)
+  - Parameters for instance binding
+- Modifying UDT definitions after instances exist is problematic — changes propagate to instances but can cause issues
+- **Correct Ignition Development Order:**
+  1. Gateway setup (scan classes, alarm pipelines, identity providers, OPC devices)
+  2. Database schema (equipment master data)
+  3. UDT definitions (COMPLETE with OPC + alarms + historian)
+  4. UDT instances (from database-driven script or manual)
+  5. Perspective views (bind to fully-configured tags)
+  6. Reports and dashboards (consume existing data)
+- **Potential Solutions:**
+  1. **PM agent memory:** Add memories to PM explaining Ignition UDT lifecycle — "Configure UDT definitions completely before instantiation"
+  2. **Architecture agent enhancement:** Have Architect produce UDT specifications with ALL properties (not just structure), then PM references that spec
+  3. **Epic template change:** For Ignition projects, use a different epic pattern:
+     - Epic 0: Gateway & Infrastructure Setup
+     - Epic 1: Data Layer (Database + Complete UDTs + Instances)
+     - Epic 2+: Feature Epics (screens, controls, reports) that consume the data layer
+  4. **Story dependency enforcement:** Add dev notes to PM explaining that alarm/historian config must be in same story as UDT creation
+  5. **Validation workflow enhancement:** Add an "Ignition development order" check to implementation readiness that flags when UDT modification happens after initial creation
+- **Root Cause:** Generic BMAD PM doesn't know that Ignition UDTs are "define once" artifacts where you can't easily add properties later
+- Decision needed: How do we teach the PM agent about platform-specific development workflows?
+
+---
+
+## ⚠️ VALIDATION BLOCKED — Course Correction Required
+
+**Date:** 2026-02-21
+**Decision:** Pause Story 3.4 validation. Address foundational gaps before continuing.
+
+### Issues Identified During Validation
+
+Three significant gaps were discovered that affect the viability of the BMAD workflow for Ignition projects:
+
+1. **No deployment/infrastructure guidance** — Architecture and epics describe WHAT to build, not HOW to set up the Ignition environment
+2. **Epic ordering violates Ignition development patterns** — UDTs are modified in multiple epics instead of defined completely once
+3. **UDT specifications incomplete** — Alarm and historian configs are separated from UDT creation
+
+### Recommended Course Correction
+
+**Step 1: Update Agent Customize Files**
+
+Add memories to PM and Architect agents:
+
+**bmm-pm.customize.yaml** (new memories needed):
+```yaml
+memories:
+  # Ignition UDT Lifecycle
+  - "Ignition UDT definitions must be created COMPLETE in a single story — include OPC bindings, alarm configurations (ISA-18.2 properties), historian scan class assignments, and all parameters. UDTs should not be modified after instances are created."
+
+  - "Structure Ignition epics with data layer first: Epic 0 for Gateway/Infrastructure setup, Epic 1 for complete Data Layer (database schema + full UDT definitions + tag instances), then feature epics that consume the data layer."
+
+  - "Never create stories that 'add alarm properties to existing UDTs' or 'configure historian on existing tags' — these must be part of the original UDT creation story."
+```
+
+**bmm-architect.customize.yaml** (additional memories needed):
+```yaml
+memories:
+  # Complete UDT Specifications
+  - "When specifying UDT definitions in architecture, include ALL properties: OPC binding patterns, alarm configurations (setpoints, priorities, labels per ISA-18.2), historian scan class assignments, and parameter definitions. The Architecture document is the source of truth for complete UDT specs."
+
+  # Infrastructure/Deployment Section
+  - "Include a Gateway Configuration section in architecture documents: scan class definitions, alarm pipeline configuration, identity provider setup, OPC device connections, and project import steps. This enables Epic 0: Infrastructure Setup."
+```
+
+**Step 2: Run SM Agent for Course Correction**
+
+Use the SM (Scrum Master) agent to review the ignition-dairy-hmi epics and identify stories that need restructuring:
+
+**SM Task:**
+```
+Review the epics.md for ignition-dairy-hmi. Identify stories that violate Ignition development patterns:
+1. Stories that modify UDT definitions after they were created in earlier stories
+2. Stories that add alarm or historian config separately from UDT creation
+3. Missing infrastructure/Gateway setup stories
+
+Propose a restructured epic order that follows:
+- Epic 0: Gateway & Infrastructure (scan classes, alarm pipelines, OPC devices)
+- Epic 1: Data Layer (database + complete UDTs + instances)
+- Epic 2+: Feature epics that consume the data layer
+
+Output a correction plan.
+```
+
+**Step 3: Re-run PM with Updated Memories**
+
+After updating PM customize file, re-run the PM agent to regenerate epics.md with correct Ignition development order.
+
+**Step 4: Re-run Architect with Updated Memories**
+
+After updating Architect customize file, re-run to produce architecture.md with:
+- Complete UDT specifications (including alarms + historian)
+- Gateway Configuration section
+
+**Step 5: Resume Story 3.4 Validation**
+
+After course correction, resume SM and QA agent testing.
+
+### Impact on Epic 3 Completion
+
+- Stories 3.1, 3.2, 3.3 (customize file population) are still valid
+- Story 3.4 (validation) is BLOCKED pending course correction
+- Epic 3 cannot be marked complete until validation passes
+- This may require a Story 3.5 or extended 3.4 for re-validation after corrections
+
 ### File List
