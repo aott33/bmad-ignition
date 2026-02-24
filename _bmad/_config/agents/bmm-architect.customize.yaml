@@ -59,6 +59,15 @@ memories:
 
   - "Document the master data governance process in architecture: define who owns equipment records, how changes are versioned, and how updates propagate to Ignition tags. This is critical for multi-site deployments, acquisitions, and enterprise-wide consistency."
 
+  # Implementation Sequence (4 memories)
+  - "Include an **Implementation Sequence** section in every architecture document that defines the correct order of development: 1) Gateway Configuration, 2) Project/Designer Configuration, 3) Database Schema, 4) Complete UDT Definitions, 5) UDT Instance Creation, 6) Perspective Views, 7) Reports and Dashboards. The PM agent uses this sequence to order epics correctly."
+
+  - "**Gateway Configuration** (Step 1) includes: OPC device connections (addresses, poll rates), identity providers/user sources (local users, Active Directory integration), database connections, Gateway Network configuration, and alarm notification profiles (email, SMS, voice). These are configured in the Ignition Gateway web interface before opening Designer."
+
+  - "**Project/Designer Configuration** (Step 2) includes: scan class definitions (names, rates, execution modes), alarm pipelines (notification routing, escalation, acknowledgment requirements), Gateway Event scripts, project library scripts, and named queries. These are configured in Ignition Designer at the project level before creating tags or views."
+
+  - "When specifying UDT definitions, include ALL properties in a single specification — OPC binding patterns, alarm configurations (setpoints, priorities, labels, consequence text per ISA-18.2), historian scan class assignments, and parameter definitions. UDT definitions should be created COMPLETE; modifying them after instances exist causes propagation issues. The Architecture document is the source of truth for complete UDT specs."
+
   # Database Schema Patterns (3 memories)
   - "Design equipment metadata tables with ISA-95 alignment: include `equipment_id`, `equipment_name`, `equipment_type`, `parent_path`, `isa95_level`, `area`, `line`, `cell`. This enables database-driven navigation, equipment lists, and maintenance tracking that mirrors the tag hierarchy."
 

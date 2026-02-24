@@ -345,59 +345,43 @@ Three significant gaps were discovered that affect the viability of the BMAD wor
 
 ### Recommended Course Correction
 
-**Step 1: Update Agent Customize Files**
+**Approach:** The Architect agent owns the Implementation Sequence. PM references the Architecture document when ordering epics. No PM memories needed — Architect provides the sequence, PM follows it.
 
-Add memories to PM and Architect agents:
+**Step 1: Update Architect Customize File** ✅ COMPLETED
 
-**bmm-pm.customize.yaml** (new memories needed):
+Added 4 new memories to `bmm-architect.customize.yaml`:
+
 ```yaml
 memories:
-  # Ignition UDT Lifecycle
-  - "Ignition UDT definitions must be created COMPLETE in a single story — include OPC bindings, alarm configurations (ISA-18.2 properties), historian scan class assignments, and all parameters. UDTs should not be modified after instances are created."
+  # Implementation Sequence (4 memories)
+  - "Include an **Implementation Sequence** section in every architecture document that defines the correct order of development: 1) Gateway Configuration, 2) Project/Designer Configuration, 3) Database Schema, 4) Complete UDT Definitions, 5) UDT Instance Creation, 6) Perspective Views, 7) Reports and Dashboards. The PM agent uses this sequence to order epics correctly."
 
-  - "Structure Ignition epics with data layer first: Epic 0 for Gateway/Infrastructure setup, Epic 1 for complete Data Layer (database schema + full UDT definitions + tag instances), then feature epics that consume the data layer."
+  - "**Gateway Configuration** (Step 1) includes: OPC device connections (addresses, poll rates), identity providers/user sources (local users, Active Directory integration), database connections, Gateway Network configuration, and alarm notification profiles (email, SMS, voice). These are configured in the Ignition Gateway web interface before opening Designer."
 
-  - "Never create stories that 'add alarm properties to existing UDTs' or 'configure historian on existing tags' — these must be part of the original UDT creation story."
+  - "**Project/Designer Configuration** (Step 2) includes: scan class definitions (names, rates, execution modes), alarm pipelines (notification routing, escalation, acknowledgment requirements), Gateway Event scripts, project library scripts, and named queries. These are configured in Ignition Designer at the project level before creating tags or views."
+
+  - "When specifying UDT definitions, include ALL properties in a single specification — OPC binding patterns, alarm configurations (setpoints, priorities, labels, consequence text per ISA-18.2), historian scan class assignments, and parameter definitions. UDT definitions should be created COMPLETE; modifying them after instances exist causes propagation issues. The Architecture document is the source of truth for complete UDT specs."
 ```
 
-**bmm-architect.customize.yaml** (additional memories needed):
-```yaml
-memories:
-  # Complete UDT Specifications
-  - "When specifying UDT definitions in architecture, include ALL properties: OPC binding patterns, alarm configurations (setpoints, priorities, labels per ISA-18.2), historian scan class assignments, and parameter definitions. The Architecture document is the source of truth for complete UDT specs."
+**Step 2: Recompile Agents**
 
-  # Infrastructure/Deployment Section
-  - "Include a Gateway Configuration section in architecture documents: scan class definitions, alarm pipeline configuration, identity provider setup, OPC device connections, and project import steps. This enables Epic 0: Infrastructure Setup."
-```
+Run `npx bmad-method install` in the bmad-ignition repo to recompile agents with new memories.
 
-**Step 2: Run SM Agent for Course Correction**
+**Step 3: Re-run Architect**
 
-Use the SM (Scrum Master) agent to review the ignition-dairy-hmi epics and identify stories that need restructuring:
+Re-run Architect agent on ignition-dairy-hmi to produce updated architecture.md with:
+- **Implementation Sequence** section (7 steps)
+- **Gateway Configuration** section (notification profiles, OPC devices, identity providers, database connections)
+- **Project/Designer Configuration** section (scan classes, alarm pipelines, Gateway Events, scripts)
+- Complete UDT specifications (OPC + alarms + historian in one spec)
 
-**SM Task:**
-```
-Review the epics.md for ignition-dairy-hmi. Identify stories that violate Ignition development patterns:
-1. Stories that modify UDT definitions after they were created in earlier stories
-2. Stories that add alarm or historian config separately from UDT creation
-3. Missing infrastructure/Gateway setup stories
+**Step 4: Re-run PM**
 
-Propose a restructured epic order that follows:
-- Epic 0: Gateway & Infrastructure (scan classes, alarm pipelines, OPC devices)
-- Epic 1: Data Layer (database + complete UDTs + instances)
-- Epic 2+: Feature epics that consume the data layer
-
-Output a correction plan.
-```
-
-**Step 3: Re-run PM with Updated Memories**
-
-After updating PM customize file, re-run the PM agent to regenerate epics.md with correct Ignition development order.
-
-**Step 4: Re-run Architect with Updated Memories**
-
-After updating Architect customize file, re-run to produce architecture.md with:
-- Complete UDT specifications (including alarms + historian)
-- Gateway Configuration section
+Re-run PM agent on ignition-dairy-hmi. PM will read the Architecture document and follow the Implementation Sequence to order epics correctly:
+- Epic 0: Gateway & Infrastructure Setup
+- Epic 1: Project/Designer Configuration
+- Epic 2: Data Layer (Database + Complete UDTs + Instances)
+- Epic 3+: Feature epics (screens, controls, reports)
 
 **Step 5: Resume Story 3.4 Validation**
 
