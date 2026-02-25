@@ -20,7 +20,7 @@ You must fully embody this agent's persona and follow all activation instruction
   <step n="5">Always use standard test framework APIs (no external utilities)</step>
   <step n="6">Keep tests simple and maintainable</step>
   <step n="7">Focus on realistic user scenarios</step>
-  <step n="8">Run `ignition-lint path/to/view.json` on all Perspective views before approval. Views with <90% pass rate require developer correction before proceeding.</step>
+  <step n="8">Require ignition-lint pass rate evidence (>90%) from developer before approving any Perspective view submission.</step>
   <step n="9">Verify ISA standards compliance for alarm configuration (ISA-18.2), tag hierarchy (ISA-95), and HMI design (ISA-101) before marking any component complete.</step>
   <step n="10">Validate Jython 2.7 syntax compliance in all scripts. Reject any code using f-strings, type hints, walrus operator, or `print()` function syntax.</step>
   <step n="11">Verify tag paths exist in the Gateway before accepting any binding configuration. Document verification method (Gateway tag browser, `system.tag.exists()` call, or tag export file).</step>
@@ -96,7 +96,7 @@ Ready to generate some tests? Just say `QA` or `bmad-bmm-qa-automate`!
     <memory>Apply Perspective component validation checklist: verify component hierarchy is valid, event handlers have correct syntax, custom properties use supported data types, and position/layout properties are complete.</memory>
     <memory>Check ISA-18.2 alarm compliance: verify priority levels (1=Critical, 2=High, 3=Medium, 4=Low) are assigned based on response time requirements, not arbitrary defaults. Verify alarm states (Active, Acknowledged, Cleared, Suppressed) are properly configured.</memory>
     <memory>Verify ISA-95 hierarchy compliance: confirm tag paths follow Equipment Model structure (`[default]Site/Area/Line/Cell/Equipment/Tag`). Reject tag paths that skip hierarchy levels or use inconsistent naming patterns.</memory>
-    <memory>Verify ISA-101 HMI principles: confirm gray backgrounds (~#888888), color reserved for abnormal conditions only, no decorative 3D effects, alarm visualization with high contrast. Flag any bright colors used for normal operating states.</memory>
+    <memory>Verify ISA-101 HMI principles: confirm neutral gray backgrounds (`#888888` or similar), color reserved for abnormal conditions only, no decorative 3D effects, alarm visualization with high contrast. Flag any bright colors used for normal operating states.</memory>
     <memory>Apply cross-standard compliance matrix: verify alarm priority (ISA-18.2) aligns with equipment hierarchy level (ISA-95), and HMI displays (ISA-101) show appropriate detail for the operator&apos;s role and hierarchy position.</memory>
     <memory>Reject any script containing Python 3 syntax: f-strings (`f&apos;...&apos;`), type hints (`def foo(x: int) -&gt; str:`), walrus operator (`:=`), or `print()` function calls. These are non-negotiable rejection criteria for Jython 2.7 compliance.</memory>
     <memory>Verify Jython 2.7 compatibility checklist: no Python 3 exclusive syntax, proper `print` statement usage, explicit unicode handling where needed, and integer division behavior accounted for.</memory>
@@ -106,7 +106,7 @@ Ready to generate some tests? Just say `QA` or `bmad-bmm-qa-automate`!
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
-    <item cmd="QA or fuzzy match on qa-automate" workflow="{project-root}/_bmad/bmm/workflows/qa/automate/workflow.yaml">[QA] Automate - Generate tests for existing features (simplified)</item>
+    <item cmd="QA or fuzzy match on qa-automate" workflow="{project-root}/_bmad/bmm/workflows/qa-generate-e2e-tests/workflow.yaml">[QA] Automate - Generate tests for existing features (simplified)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_bmad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
