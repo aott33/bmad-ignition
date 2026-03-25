@@ -1,4 +1,4 @@
-# bmad-ignition
+# claude-ignition-skills
 
 A starter kit for using Claude Code on Ignition SCADA/MES projects. No framework installs — just clone, open in Claude Code, and start building.
 
