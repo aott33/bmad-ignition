@@ -19,8 +19,8 @@ No npm. No framework. Just clone and go.
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-username/bmad-ignition.git
-cd bmad-ignition
+git clone https://github.com/your-username/claude-ignition-skills.git
+cd claude-ignition-skills
 
 # Open with Claude Code
 claude .
@@ -147,7 +147,7 @@ Review this Jython gateway script and pump view.json for production readiness
 ## Repo Structure
 
 ```
-bmad-ignition/
+claude-ignition-skills/
 ├── CLAUDE.md                        # Auto-loaded: baseline Ignition context
 ├── .claude/
 │   └── commands/
