@@ -1,18 +1,20 @@
 # claude-ignition-skills
 
-A starter kit for using Claude Code on Ignition SCADA/MES projects. No framework installs — just clone, open in Claude Code, and start building.
+A starter kit for using Claude Code on **Ignition 8.1 SCADA/MES** projects. No framework installs — just clone, open in Claude Code, and start building.
+
+> **Platform:** Ignition 8.1, Perspective module only. Vision module projects require a separate skill set. Ignition 8.3 introduces breaking changes not covered here.
 
 ## The Problem
 
-Generic AI tools don't understand Ignition. They hallucinate Jython 2.7 syntax, invent UDT properties, bind to non-existent tag paths, and misconfigure alarms. In industrial automation, these aren't just bugs — they're risks.
+Generic AI tools don't understand Ignition. They hallucinate Jython 2.7 syntax, use Vision APIs in Perspective scripts, invent UDT properties, bind to non-existent tag paths, and misconfigure alarms. In industrial automation, these aren't just bugs — they're risks.
 
 ## How It Works
 
 This repo provides **domain-aware context** through two mechanisms:
 
-1. **`CLAUDE.md`** — Auto-loaded every session. Gives Claude the critical Ignition constraints (Jython 2.7 rules, safety flagging, validation requirements) without you doing anything.
+1. **`CLAUDE.md`** — Auto-loaded every session. Gives Claude the critical Ignition constraints (Jython 2.7 rules, Perspective-only scope, safety flagging, validation requirements) without you doing anything.
 
-2. **Skills** — Role-specific prompts Claude loads automatically when relevant, or that you invoke directly with `/skill-name`.
+2. **Skills** — Role-specific playbooks Claude loads automatically when relevant, or that you invoke directly with `/skill-name`. Each skill enforces platform constraints, ISA standards, and safety practices for its domain.
 
 No npm. No framework. Just clone and go.
 
@@ -26,55 +28,57 @@ cd claude-ignition-skills
 claude .
 ```
 
-`CLAUDE.md` is automatically loaded. Claude now knows this is an Ignition project and will enforce Jython 2.7 constraints, safety flagging, and validation requirements in every session.
+`CLAUDE.md` is automatically loaded. Claude now knows this is an Ignition 8.1 Perspective project and will enforce Jython 2.7 constraints, safety flagging, and validation requirements in every session.
 
 ## Skills
 
 Claude loads these automatically when relevant, or invoke directly with `/skill-name`.
 
 ### `/ignition-dev`
-**Use when:** writing Jython scripts, Perspective views, UDT definitions, tag configurations.
+**Use when:** writing Jython scripts, Perspective views, UDT definitions, tag configurations, or any Ignition platform code.
 
-Enforces Jython 2.7 constraints, Perspective JSON structure, UDT patterns, ISA standards in code, and the full validation workflow.
+Enforces Jython 2.7 constraints, Perspective-only APIs (`system.perspective.*` — never `system.gui.*`), all four binding types with expression binding preference, `java.lang.Throwable` error handling for Java/JDBC exceptions, named-query-only database access, UDT patterns, ISA standards in code, `system.project.requestScan()` for view propagation, and the full validation workflow.
 
 ```
 /ignition-dev Write a UDT definition for a centrifugal pump with ISA-18.2 alarm config
 ```
 
 ### `/ignition-architect`
-**Use when:** designing system architecture, UDT hierarchy, database schema, integration patterns.
+**Use when:** designing Gateway deployment architecture, UDT hierarchy, database schema, or integration architecture.
 
-Covers ISA-95 equipment hierarchy, database-driven master data model, UDT inheritance design, implementation sequencing, ISA-88 batch architecture.
+Covers the full Gateway architecture decision framework (Basic, Redundancy, Scale-Out, Hub-and-Spoke, Edge, Enterprise, Cloud), ISA-95 equipment hierarchy, database-driven master data model, UDT inheritance design, scan class design, historian configuration, Ignition module selection, implementation sequencing, and ISA-88 batch architecture.
 
 ```
-/ignition-architect Design the UDT hierarchy and database schema for a dairy pasteurization system
+/ignition-architect Design the Gateway architecture and UDT hierarchy for a multi-site dairy operation
 ```
 
 ### `/ignition-ui`
-**Use when:** designing Perspective screens, navigation flows, operator UX.
+**Use when:** designing Perspective screens, navigation flows, operator UX, faceplates, or style systems.
 
-Covers ISA-101 High Performance HMI principles, the full Perspective component catalog, reusable view patterns, parameter-driven faceplates.
+Covers ISA-101 High Performance HMI principles, mandatory global styles and style classes (never hardcoded colors), expression binding patterns and the Integration Toolkit for performant UI logic, `system.perspective.*` navigation and popup APIs, `view.json` structure, `system.project.requestScan()` for Designer propagation, the full Perspective component catalog, and reusable parameterized view patterns.
 
 ```
 /ignition-ui Design a tank farm overview screen following ISA-101 principles
 ```
 
 ### `/ignition-plan`
-**Use when:** writing PRDs, conducting discovery, scoping epics, planning sprints.
+**Use when:** writing PRDs, conducting discovery, scoping epics, planning sprints, or defining acceptance criteria.
 
-Covers industrial requirements discovery questions, PRD structure for Ignition projects, epic ordering (aligned with Ignition's implementation sequence), alarm philosophy, safety scoping.
+Covers industrial requirements discovery (equipment, alarms, operator workflows, integration systems, architecture type, migration strategy), PRD structure for Ignition 8.1 projects, FAT/SAT acceptance criteria, licensing guidance, epic ordering aligned with Ignition's implementation sequence, and safety scoping.
 
 ```
-/ignition-plan Help me write the alarm management section of the PRD for a cheese production facility
+/ignition-plan Help me scope a PRD for a cheese production facility — continuous process, 3 sites
 ```
 
 ### `/ignition-review`
-**Use when:** reviewing Jython scripts, Perspective views, or architecture docs for correctness.
+**Use when:** reviewing Jython scripts, Perspective views, UDT definitions, or architecture docs for production readiness.
 
-Runs a structured review against Jython 2.7 compliance, Perspective structure, ISA standards, and validation evidence. Returns APPROVE or RETURN with specific findings. Must be invoked manually — Claude will not trigger this automatically.
+Runs a structured review against: Jython 2.7 compliance, Vision API violations (`system.gui.*` = unconditional rejection), SQL injection (`system.db.runQuery` with string formatting = rejection), `java.lang.Throwable` error handling coverage, style class usage (no hardcoded colors), expression vs script binding performance, ISA standards, safety flags, and validation evidence. Returns `APPROVE` or `RETURN` with specific findings.
+
+**Must be invoked manually** — Claude will not trigger this automatically.
 
 ```
-/ignition-review Review this gateway event script for Jython 2.7 compliance and ISA-95 tag structure
+/ignition-review Review this gateway event script and pump view.json for production readiness
 ```
 
 ## Reference Docs
@@ -83,10 +87,12 @@ Use `@` to pull these into context when you need detailed reference:
 
 | Doc | Use for |
 |---|---|
-| `@docs/jython-constraints.md` | Jython 2.7 syntax rules and patterns |
+| `@docs/jython-constraints.md` | Jython 2.7 syntax, tag read/write patterns, `java.lang.Throwable` error handling |
 | `@docs/isa-standards.md` | ISA-101, ISA-95, ISA-88, ISA-18.2, IEC 62443 |
-| `@docs/tag-structure.md` | Tag paths, UDT patterns, ISA-95 folder structure, DB schema |
-| `@docs/perspective-components.md` | Full Perspective component reference |
+| `@docs/tag-structure.md` | Tag paths, UDT patterns, ISA-95 folder structure, DB schema, alarm JSON |
+| `@docs/system-architectures.md` | Gateway architecture patterns — Basic, Hub-and-Spoke, Scale-Out, Redundancy, Edge, Enterprise, Cloud |
+| `@docs/perspective-components.md` | Perspective component reference with JSON examples |
+| `@docs/perspective-styles.md` | Style classes, built-in themes, CSS variables, ISA-101 baseline style definitions |
 | `@docs/validation-workflow.md` | ignition-lint + LSP + Gateway validation steps |
 | `@docs/parallel-dev.md` | File isolation rules for multi-agent parallel work |
 
@@ -101,7 +107,7 @@ Use `@` to pull these into context when you need detailed reference:
 ### Designing the architecture
 
 ```
-/ignition-architect Based on this PRD, design the UDT hierarchy and implementation sequence
+/ignition-architect Based on this PRD, design the Gateway architecture, UDT hierarchy, and implementation sequence
 ```
 
 ### Building screens
@@ -126,26 +132,28 @@ Use `@` to pull these into context when you need detailed reference:
 
 ```
 claude-ignition-skills/
-├── CLAUDE.md                          # Auto-loaded: baseline Ignition context
+├── CLAUDE.md                            # Auto-loaded: baseline Ignition 8.1 context
 ├── .claude/
 │   └── skills/
 │       ├── ignition-dev/
-│       │   └── SKILL.md               # /ignition-dev skill
+│       │   └── SKILL.md                 # /ignition-dev — auto-loaded when writing Ignition code
 │       ├── ignition-architect/
-│       │   └── SKILL.md               # /ignition-architect skill
+│       │   └── SKILL.md                 # /ignition-architect — auto-loaded for architecture work
 │       ├── ignition-ui/
-│       │   └── SKILL.md               # /ignition-ui skill
+│       │   └── SKILL.md                 # /ignition-ui — auto-loaded for Perspective UI work
 │       ├── ignition-plan/
-│       │   └── SKILL.md               # /ignition-plan skill
+│       │   └── SKILL.md                 # /ignition-plan — auto-loaded for project planning
 │       └── ignition-review/
-│           └── SKILL.md               # /ignition-review skill (manual-only)
+│           └── SKILL.md                 # /ignition-review — manual only (disable-model-invocation)
 ├── docs/
-│   ├── jython-constraints.md          # Jython 2.7 reference
-│   ├── isa-standards.md               # ISA-101, 95, 88, 18.2, IEC 62443
-│   ├── tag-structure.md               # Tag paths, UDT patterns, DB schema
-│   ├── perspective-components.md      # Perspective component reference
-│   ├── validation-workflow.md         # ignition-lint + LSP workflow
-│   └── parallel-dev.md                # Multi-agent file isolation
+│   ├── jython-constraints.md            # Jython 2.7 reference + java.lang.Throwable patterns
+│   ├── isa-standards.md                 # ISA-101, 95, 88, 18.2, IEC 62443
+│   ├── tag-structure.md                 # Tag paths, UDT patterns, DB schema, alarm JSON
+│   ├── system-architectures.md          # Gateway architecture patterns and decision guide
+│   ├── perspective-components.md        # Perspective component reference
+│   ├── perspective-styles.md            # Style classes, themes, CSS variables
+│   ├── validation-workflow.md           # ignition-lint + LSP + Gateway workflow
+│   └── parallel-dev.md                  # File isolation for multi-agent parallel work
 └── README.md
 ```
 
@@ -153,7 +161,7 @@ claude-ignition-skills/
 
 | Standard | Coverage |
 |---|---|
-| **ISA-101** | High Performance HMI — color discipline, information density, navigation |
+| **ISA-101** | High Performance HMI — color discipline, style classes, information density, navigation |
 | **ISA-95** | Equipment hierarchy — tag folder structure, UDT design, DB schema |
 | **ISA-88** | Batch control — procedural model, phase state machine, recipe management |
 | **ISA-18.2** | Alarm management — priorities, states, deadband, shelving, rationalization |
@@ -162,6 +170,12 @@ claude-ignition-skills/
 ## Target User
 
 Lead Ignition Developer who:
-- Has deep Ignition expertise (UDTs, Perspective, alarms, historian)
+- Has deep Ignition 8.1 expertise (UDTs, Perspective, alarms, historian)
 - Is comfortable with Git and Claude Code
 - Wants AI productivity gains without trusting generic tools in safety-critical environments
+
+## Acknowledgments
+
+- [Fuuz Claude Skills](https://github.com/fuuz-io) — customize file patterns and ISA standards implementation
+- [BW Design Group](https://github.com/bw-design-group/templates.ignition.postgres) — Docker/Liquibase reference templates
+- [Automation Professionals Integration Toolkit](https://www.automation-pros.com/toolkit/doc/) — expression functions reference
