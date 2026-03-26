@@ -9,8 +9,9 @@ Thumbs.db
 *.swo
 *~
 
-# Node (BMAD CLI)
-node_modules/
+# Claude Code settings (not shared)
+.claude/settings.json
+.claude/settings.local.json
 
 # Python (ignition-lint)
 __pycache__/

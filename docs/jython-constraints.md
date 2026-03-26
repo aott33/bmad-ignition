@@ -186,14 +186,50 @@ logger.error('Tag write failed: %s' % tagPath)
 ### Database Queries
 
 ```python
-# Named query (preferred)
+# Named query — ALWAYS preferred. Parameterized, no SQL injection risk.
 params = {'areaId': 'Refrigeration', 'status': 1}
 results = system.db.runNamedQuery('getEquipmentByArea', params)
 
-# Direct query (use sparingly, prefer named queries)
-query = "SELECT equipment_id, name FROM Equipment WHERE area = '%s'" % area
-# WARNING: the above is SQL injection vulnerable — use parameterized named queries
+# Direct query — AVOID. Never use string formatting to build queries.
+# The following is SQL injection vulnerable and MUST NOT be used:
+# query = "SELECT * FROM Equipment WHERE area = '%s'" % area  # WRONG
 ```
+
+### Error Handling — Java Exceptions
+
+Ignition runs on the JVM. SQL and JDBC operations throw **Java exceptions** (`java.lang.Throwable`) that Jython's `Exception` will NOT catch. Always catch both:
+
+```python
+import java.lang
+
+logger = system.util.getLogger('MyModule')
+
+try:
+    countDs = system.db.runNamedQuery('getFailedCount', {'tagProvider': tagProvider})
+    resetCount = countDs.getValueAt(0, 'FailedCount')
+
+    system.db.runNamedQuery('resetFailed', {'tagProvider': tagProvider})
+
+    message = 'Reset {} failed chunks for {}'.format(resetCount, tagProvider)
+    logger.info(message)
+    return {'message': message, 'resetCount': resetCount}
+
+except java.lang.Throwable as ex:
+    # Catches Java/JDBC/SQL exceptions — e.g. connection failures, constraint violations
+    message = 'Reset failed: {}'.format(ex)
+    logger.error(message)
+    return {'message': message, 'resetCount': 0}
+
+except Exception as ex:
+    # Catches Jython/Python exceptions — e.g. NullPointerException wrappers, logic errors
+    message = 'Reset failed: {}'.format(ex)
+    logger.error(message)
+    return {'message': message, 'resetCount': 0}
+```
+
+**Why both?** `system.db.*` calls invoke JDBC drivers written in Java. Java exceptions inherit from `java.lang.Throwable`, not from Python's `BaseException`. A bare `except Exception` will silently miss JDBC errors — the try block fails and control falls through without logging.
+
+**Rule:** Any code calling `system.db.*`, `system.tag.*`, OPC functions, or any Ignition system function that touches external resources must catch `java.lang.Throwable` in addition to `Exception`.
 
 ## Validation Tools
 
