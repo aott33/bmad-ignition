@@ -2,6 +2,21 @@
 
 Ignition scripting runs on **Jython 2.7.x**, a Java implementation of Python 2.7. This is not Python 3. These constraints apply to all scripts: Gateway Event scripts, project library scripts, Perspective event handlers, and Tag Event scripts.
 
+## Ignition Scripting Scope
+
+**`system` is pre-scoped** in every Ignition script context. It is injected automatically by the Ignition runtime. Never write `import system` - it is unnecessary and signals a misunderstanding of how Ignition works.
+
+**`java.lang` must be imported explicitly** before using Java exception types:
+
+```python
+import java.lang  # required for java.lang.Throwable
+
+# system is already available - no import needed
+system.util.getLogger('MyModule').info('Ready')
+```
+
+This distinction matters: `java.*` packages are standard Java and must be imported. `system.*` is Ignition-specific and is always pre-scoped.
+
 ## Hard Constraints (Silent Runtime Failures)
 
 ### 1. No f-strings

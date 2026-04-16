@@ -22,8 +22,10 @@ Any of the following is an **unconditional rejection**. No exceptions.
 | `if (x := getValue()):` | walrus operator doesn't exist in Jython 2.7 |
 | `print('a', 'b')` as function call | outputs tuple `('a', 'b')` instead of `a b` |
 | `from __future__ import annotations` | not available in Jython 2.7 |
+| `import system` anywhere | `system` is pre-scoped in Ignition; this import is wrong |
 | `system.gui.*` in any Perspective script | Vision-only API; runtime exception in Perspective |
 | Direct SQL string formatting | SQL injection risk — only named queries are acceptable |
+| Em-dash (`-`) in log messages, labels, or output | Does not render correctly in Gateway logs or Perspective labels on all locales; use ` - ` instead |
 
 Also check:
 - Integer division: `5/2 = 2` in Jython 2.7 — use `5.0/2` when decimal needed
